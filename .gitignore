@@ -1,5 +1,6 @@
 yarn-error.log
 .nyc_output
+firebase-debug.log
 
 node_modules/
 bower_components/
