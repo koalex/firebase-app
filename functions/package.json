@@ -1,0 +1,25 @@
+{
+  "name": "firebase_sample",
+  "description": "node + firebase sample app",
+  "scripts": {
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "serve": "firebase serve --only functions,hosting",
+    "logs": "firebase functions:log",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "firebase:login": "firebase login",
+    "firebase:init:hosting": "firebase init hosting",
+    "firebase:init:functions": "firebase init functions",
+    "deploy": "firebase deploy"
+  },
+  "dependencies": {
+    "co": "^4.6.0",
+    "consolidate": "^0.15.1",
+    "express": "^4.16.3",
+    "firebase-admin": "~5.13.0",
+    "firebase-functions": "^2.0.0",
+    "handlebars": "^4.0.11",
+    "uuid": "^3.3.2"
+  },
+  "private": true
+}
