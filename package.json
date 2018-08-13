@@ -1,0 +1,16 @@
+{
+  "name": "firebase_sample_main",
+  "description": "node + firebase sample app",
+  "scripts": {
+    "db:loadimage": "docker pull mysql/mysql-server:8.0",
+    "db:start": "docker run --name=mysqlfirebase -d mysql/mysql-server:8.0",
+    "db:stop": "docker stop mysqlfirebase",
+    "db:logs": "docker logs mysqlfirebase",
+    "db:onetimepassword": "docker logs mysqlfirebase 2>&1 | grep GENERATED",
+    "db:client": "docker exec -it mysqlfirebase mysql -uroot -p"
+  },
+  "private": true,
+  "dependencies": {
+    "mysql": "^2.16.0"
+  }
+}

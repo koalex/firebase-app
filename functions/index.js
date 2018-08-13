@@ -13,6 +13,7 @@ process
     });
 
 const express     = require('express');
+const bodyParser  = require('body-parser');
 const viewEngines = require('consolidate');
 const firebase    = require('firebase-admin');
 const functions   = require('firebase-functions');
@@ -20,17 +21,29 @@ const co          = require('co');
 const uuidv1      = require('uuid/v1');
 const app         = express();
 const firebaseApp = firebase.initializeApp(functions.config().firebase);
+const mysql       = require('../lib/mysql');
 
 app.engine('hbs', viewEngines.handlebars);
 app.set('views', './views');
 app.set('view engine', 'hbs');
+
+const urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 // Read all orders
 app.get('/', (req, res) => {
     co(function* () {
         let orders = yield getAllOrders();
 
-        console.log('orders =', orders);
+        new Promise((resolve, reject) => {
+
+        });
+        mysql.query('SELECT * from oreders LIMIT 100', function (err, rows, fields) {
+            if (!err) {
+                console.log('The solution is: ', rows);
+            } else {
+                console.log('Error while performing Query.');
+            }
+        });
 
         res.render('index', {
             orders
@@ -38,8 +51,24 @@ app.get('/', (req, res) => {
     });
 });
 
+// Create order (client)
+app.get('/create-order', (req, res) => {
+    res.render('createOrder', {});
+});
+
 // Create order
-app.post('/orders/:order', (req, res) => {
+app.post('/orders', urlencodedParser, (req, res) => {
+    if (!req.body) return res.sendStatus(400);
+
+    let {
+        name,
+        lastname,
+        phone,
+        delivery_address,
+        city,
+        zip
+    } = req.body;
+
     co(function* () {
         yield createOrder(decodeURIComponent(req.params.order));
 

@@ -13,6 +13,7 @@
     "deploy": "firebase deploy"
   },
   "dependencies": {
+    "body-parser": "^1.18.3",
     "co": "^4.6.0",
     "consolidate": "^0.15.1",
     "express": "^4.16.3",
