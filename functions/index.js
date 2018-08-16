@@ -74,7 +74,30 @@ app.post('/orders', urlencodedParser, (req, res) => {
     co(function* () {
         yield createOrder(decodeURIComponent(req.params.order));
 
-        // Создавать запись в транзакции
+        connection.beginTransaction(function(err) {
+            if (err) { throw err; }
+
+            let order_query = "INSERT INTO 'carry'.'orders' ('name', 'lastname', 'phone', 'delivery_address', 'city', 'zip', 'details') " +
+                "VALUES ('')";
+            //значения надо запихать
+            connection.query(order_query, function(err, result) {
+                if (err) {
+                    connection.rollback(function() {
+                        throw err;
+                    });
+                }
+
+                connection.commit(function(err) {
+                    if (err) {
+                        connection.rollback(function() {
+                            throw err;
+                        });
+                    }
+
+                    connection.end();
+                });
+            });
+        });
 
         res.redirect('/');
     });
@@ -85,7 +108,30 @@ app.put('/orders/:id', (req, res) => {
     co(function* () {
         yield updateOrder({ id: req.params.id, data: req.query.data });
 
-        // Обновлять запись в транзакции
+    connection.beginTransaction(function(err) {
+        if (err) { throw err; }
+
+        let update_order_query = "UPDATE orders SET ('name', 'lastname', 'phone', 'delivery_address', 'city', 'zip', 'details') " +
+            "VALUES ('')" + "WHERE ID = " + req.params.id;
+        //значения надо запихать
+        connection.query(update_order_query, function(err, result) {
+            if (err) {
+                connection.rollback(function() {
+                    throw err;
+                });
+            }
+
+            connection.commit(function(err) {
+                if (err) {
+                    connection.rollback(function() {
+                        throw err;
+                    });
+                }
+
+                connection.end();
+            });
+        });
+    });
 
         res.redirect('/');
     });
@@ -96,7 +142,28 @@ app.delete('/orders/:id', (req, res) => {
     co(function* () {
         yield removeSingleOrder(req.params.id);
 
-        // Удалять запись в транзакции
+    connection.beginTransaction(function(err) {
+        if (err) { throw err; }
+
+        let delete_order_query = "DELETE FROM orders WHERE ID = " + req.params.id;
+        connection.query(delete_order_query, function(err, result) {
+            if (err) {
+                connection.rollback(function() {
+                    throw err;
+                });
+            }
+
+            connection.commit(function(err) {
+                if (err) {
+                    connection.rollback(function() {
+                        throw err;
+                    });
+                }
+
+                connection.end();
+            });
+        });
+    });
 
         res.redirect('/');
     });
