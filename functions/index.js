@@ -37,6 +37,8 @@ app.get('/', (req, res) => {
         new Promise((resolve, reject) => {
 
         });
+
+        // Выбирать все записи с лимитом
         mysql.query('SELECT * from oreders LIMIT 100', function (err, rows, fields) {
             if (!err) {
                 console.log('The solution is: ', rows);
@@ -72,6 +74,8 @@ app.post('/orders', urlencodedParser, (req, res) => {
     co(function* () {
         yield createOrder(decodeURIComponent(req.params.order));
 
+        // Создавать запись в транзакции
+
         res.redirect('/');
     });
 });
@@ -81,14 +85,7 @@ app.put('/orders/:id', (req, res) => {
     co(function* () {
         yield updateOrder({ id: req.params.id, data: req.query.data });
 
-        res.redirect('/');
-    });
-});
-
-// Delete all orders
-app.delete('/orders', (req, res) => {
-    co(function* () {
-        yield removeOrders();
+        // Обновлять запись в транзакции
 
         res.redirect('/');
     });
@@ -98,6 +95,8 @@ app.delete('/orders', (req, res) => {
 app.delete('/orders/:id', (req, res) => {
     co(function* () {
         yield removeSingleOrder(req.params.id);
+
+        // Удалять запись в транзакции
 
         res.redirect('/');
     });
