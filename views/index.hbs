@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Firebase sample app</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-promise/4.1.1/es6-promise.auto.min.js" integrity="sha256-OI3N9zCKabDov2rZFzl8lJUXCcP7EmsGcGoP6DMXQCo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.4/fetch.min.js" integrity="sha256-eOUokb/RjDw7kS+vDwbatNrLN8BIvvEhlLM5yogcDIo=" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <style>
+        h1 {
+            text-align: center;
+        }
+        .alerts { min-height: 68px; }
+        .alerts .alert {
+            display: none;
+            margin-bottom: 0;
+        }
+        .new-order {
+            position: fixed;
+            top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container alerts">
+        <div class="alert alert-danger" role="alert">
+            Error.
+        </div>
+    </div>
+
+    <h1>Demo</h1>
+    <br>
+
+    <button type="button" class="btn btn-primary new-order" data-toggle="modal" data-target="#newOrder">New Order</button>
+
+    <div class="modal fade" id="newOrder" tabindex="-1" role="dialog" aria-labelledby="newOrderLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form id="orderForm" class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newOrderLabel">Create new order</h5>
+                    <button type="button" id="btnClose" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Name:</span>
+                            </div>
+                            <input name="name" type="text" class="form-control order-field" aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Lastname:</span>
+                            </div>
+                            <input name="lastname" type="text" class="form-control order-field" aria-label="Lastname" aria-describedby="basic-addon1">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Phone:</span>
+                            </div>
+                            <input name="phone" type="text" class="form-control order-field" aria-label="Phone" aria-describedby="basic-addon1">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">City:</span>
+                            </div>
+                            <input name="city" type="text" class="form-control order-field" aria-label="City" aria-describedby="basic-addon1">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">ZIP:</span>
+                            </div>
+                            <input name="zip" type="text" class="form-control order-field" aria-label="ZIP code" aria-describedby="basic-addon1">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">Address:</span>
+                            </div>
+                            <input name="delivery_address" type="text" class="form-control order-field" aria-label="Address" aria-describedby="basic-addon1">
+                        </div>
+
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Details:</span>
+                            </div>
+                            <textarea name="details" class="form-control order-field" aria-label="Order details"></textarea>
+                        </div>
+
+                        <br>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnCancel" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" id="btnSave" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="container ">
+        <div class="row">
+            {{#each orders}}
+                <div class="col col-md-6 col-sm-12">
+                    <div class="card">
+                        <!--<img class="card-img-top" src="https://cdn.xl.thumbs.canstockphoto.com/order-stamp-with-word-order-inside-vector-illustration-eps-vector_csp20052745.jpg" alt="Card image cap">-->
+                        <div class="card-body">
+                            <h5 class="card-title">Order: {{this.id}} / timestamp:({{this.dt}})</h5>
+                            <p class="card-text">
+                                {{this.name}}
+                                {{this.lastname}},
+                                {{this.city}},
+                                {{this.delivery_address}}...
+                            </p>
+
+                            <a href="/orders/{{this.id}}" class="btn btn-primary">Details</a>
+                            <a href="#" data-id="{{this.id}}" onclick="deleteOrder(this.dataset.id)" class="btn btn-danger">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+
+    <script>
+        var orderForm    = document.querySelector('#orderForm');
+        var orderFields  = orderForm.querySelectorAll('.order-field');
+        var btnSave      = document.querySelector('#btnSave');
+        var btnClose     = document.querySelector('#btnClose');
+        var btnCancel    = document.querySelector('#btnCancel');
+        var alertDanger  = document.querySelector('.alert.alert-danger');
+
+        function enableOrderFields () {
+            for (var i = 0, l = orderFields.length; i < l; i++) orderFields[i].removeAttribute('disabled');
+        }
+
+        function disableOrderFields () {
+            for (var i = 0, l = orderFields.length; i < l; i++) orderFields[i].setAttribute('disabled', '');
+        }
+
+        function enableOrderForm () {
+            enableOrderFields();
+            btnClose.removeAttribute('disabled');
+            btnCancel.removeAttribute('disabled');
+            btnSave.removeAttribute('disabled');
+        }
+
+        function disableOrderForm () {
+            disableOrderFields();
+            btnClose.setAttribute('disabled', '');
+            btnCancel.setAttribute('disabled', '');
+            btnSave.setAttribute('disabled', '');
+        }
+
+        function saveOrder (orderData) {
+            var body = new URLSearchParams();
+
+            for (var prop in orderData) body.set(prop, orderData[prop]);
+
+            return fetch('/api/v1/orders/', {
+                method: 'POST',
+                redirect: 'follow',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: body
+            })
+                    .then(function(response) {
+                        if (response.status >= 400) {
+                            return response.text().then(showAlert);
+                        } else {
+                            location.reload();
+                        }
+                    })
+        }
+
+        function deleteOrder (orderId) {
+            return fetch('/api/v1/orders/' + orderId, {
+                method: 'DELETE'
+            })
+                    .then(function (response) {
+                        if (response.status >= 400) {
+                            return response.text().then(showAlert);
+                        } else {
+                            location.reload();
+                        }
+                    })
+        }
+
+        orderForm.addEventListener('submit', function (ev) {
+            ev.preventDefault();
+            disableOrderForm();
+            var data = {};
+            for (var i = 0, l = orderFields.length; i < l; i++) data[orderFields[i].name] = orderFields[i].value;
+            saveOrder(data)
+                    .then(enableOrderForm, err => {
+                        enableOrderForm();
+                        showAlert(err.message);
+                    });
+        });
+
+        function showAlert (message) {
+            alertDanger.textContent   = message;
+            alertDanger.style.display = 'block';
+
+            setTimeout(function () {
+                alertDanger.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
